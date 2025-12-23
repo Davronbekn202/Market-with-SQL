@@ -21,9 +21,6 @@ def see():
     for d in data:
         print(f"id: {d[0]} | title: {d[1]} | price: {d[2]}")
 
-    cursor.close()
-    connection.close()
-
 
 def add_product(title, price):
     connection = get_connection()
@@ -35,11 +32,17 @@ def add_product(title, price):
     """, (title, price))
 
     connection.commit()
-    cursor.close()
-    connection.close()
-
     print("Product added")
 
+
+def delete_product(id):
+    connection = get_connection()
+    cursor = connection.cursor()
+    cursor.execute("""
+    DELETE FROM product WHERE id=%s
+    """, (id,))
+    connection.commit()
+    print(f"{id} has deleted")
 
 def update_product(product_id, new_price):
     connection = get_connection()
@@ -52,8 +55,6 @@ def update_product(product_id, new_price):
     """, (new_price, product_id))
 
     connection.commit()
-    cursor.close()
-    connection.close()
 
     print("Product updated")
 
@@ -64,6 +65,7 @@ def work():
 1 - See products
 2 - Add product
 3 - Update product
+4 - delete product
 0 - Exit
         """)
 
@@ -81,6 +83,9 @@ def work():
             product_id = int(input("Enter product id: "))
             new_price = float(input("Enter new price: "))
             update_product(product_id, new_price)
+        elif option == "4":
+            remove = input("Enter product id: ")
+            delete_product(remove)
 
         elif option == "0":
             print("Bye")
@@ -89,5 +94,5 @@ def work():
         else:
             print("Invalid option")
 
-work()
 
+work()
